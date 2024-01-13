@@ -895,7 +895,7 @@ class SeismicTraceIterableDataset(IterableDataset):
                     sampling_rate=self.sampling_rate,
                 )
             elif (self.format == "h5") and (self.dataset == "seismic_trace"):
-                self.hdf5_fp = h5py.File(self.hdf5_file, 'r')
+                self.hdf5_fp = h5py.File(self.hdf5_file, 'r', swmr=True)
                 meta = self.read_hdf5(fname)
                 hdf5_fp = self.hdf5_fp
                 hdf5_fp.close()
