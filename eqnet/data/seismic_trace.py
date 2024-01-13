@@ -822,7 +822,7 @@ class SeismicTraceIterableDataset(IterableDataset):
             if waveform.shape[1] == 3:
                 waveform = waveform.T  # [3, Nt]
             waveform = waveform[:, :, np.newaxis]
-            meta["waveform"] = waveform.astype(np.float32)
+            meta["waveform"] = torch.from_numpy(waveform.astype(np.float32))
             meta["station_id"] = [sta_id]
             meta["begin_time"] = hdf5_fp[event_id].attrs["begin_time"]
             meta["dt_s"] = hdf5_fp[trace_id].attrs["dt_s"]
@@ -895,7 +895,10 @@ class SeismicTraceIterableDataset(IterableDataset):
                     sampling_rate=self.sampling_rate,
                 )
             elif (self.format == "h5") and (self.dataset == "seismic_trace"):
+                self.hdf5_fp = h5py.File(self.hdf5_file, 'r')
                 meta = self.read_hdf5(fname)
+                hdf5_fp = self.hdf5_fp
+                hdf5_fp.close()
             elif (self.format == "h5") and (self.dataset == "das"):
                 meta = self.read_das_hdf5(fname)
             elif (self.format == "segy") or (self.format == "sgy"):
